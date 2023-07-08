@@ -1,21 +1,20 @@
 [package]
-name = "random-manager"
-version = "0.0.5" # https://crates.io/crates/random-manager
+name = "ssh-scp-manager"
+version = "0.0.0" # https://crates.io/crates/ssh-scp-manager
 edition = "2021"
-rust-version = "1.67"
+rust-version = "1.70"
 publish = true
 description = "Rust random manager"
-repository = "https://github.com/gyuho/random-manager"
+repository = "https://github.com/gyuho/ssh-scp-manager"
 readme = "README.md"
 license = "Apache-2.0"
 
 [dependencies]
-bs58 = "0.4.0"
-lazy_static = "1.4.0"
-primitive-types = "0.12.1"
-rand = "0.8.5"
-ring = "0.16.20"
+base64 = "0.21.2"
+command-manager = "0.0.3"
+log = "0.4.17"
+openssl = { version = "0.10", features = ["vendored"] }
+serde = { version = "1.0.167", features = ["derive"] } # https://github.com/serde-rs/serde/releases
 
 [dev-dependencies]
 env_logger = "0.10.0"
-log = "0.4.17"
