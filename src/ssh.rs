@@ -86,7 +86,7 @@ impl Command {
             ));
         }
         if overwrite {
-            let local_rm_cmd = format!("rm -f {local_file_path} || true'");
+            let local_rm_cmd = format!("rm -f {local_file_path} || true");
             let rm_out = command_manager::run(&local_rm_cmd)?;
             log::info!("successfully rm '{local_file_path}' (out {:?})", rm_out);
         };
@@ -175,7 +175,7 @@ impl Command {
             ));
         }
         if overwrite {
-            let local_rm_cmd = format!("rm -rf {local_directory_path} || true'");
+            let local_rm_cmd = format!("rm -rf {local_directory_path} || true");
             let rm_out = command_manager::run(&local_rm_cmd)?;
             log::info!(
                 "successfully rm '{local_directory_path}' (out {:?})",
