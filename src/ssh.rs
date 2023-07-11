@@ -71,6 +71,15 @@ impl Command {
         command_manager::run(&remote_cmd_to_run)
     }
 
+    pub fn ssm_start_session_command(&self) -> String {
+        // aws ssm start-session --region [region] --target [instance ID]
+        format!(
+            "aws ssm start-session --region {region} --target {instance_id}",
+            region = self.region,
+            instance_id = self.instance_id,
+        )
+    }
+
     /// Downloads a remote file to the local machine.
     pub fn download_file(
         &self,
