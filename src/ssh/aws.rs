@@ -19,6 +19,8 @@ pub struct Command {
 
     pub ip_mode: String,
     pub public_ip: String,
+
+    pub profile: Option<String>,
 }
 
 /// ref. <https://doc.rust-lang.org/std/string/trait.ToString.html>
@@ -32,18 +34,27 @@ impl std::fmt::Display for Command {
             f,
             "# change SSH key permission
 chmod 400 {ssh_key_path}
+
 # instance '{instance_id}' ({instance_state}, {availability_zone}) -- ip mode '{ip_mode}'
 ssh -o \"StrictHostKeyChecking no\" -i {ssh_key_path} {user_name}@{public_ip}
 ssh -o \"StrictHostKeyChecking no\" -i {ssh_key_path} {user_name}@{public_ip} 'tail -10 /var/log/cloud-init-output.log'
 ssh -o \"StrictHostKeyChecking no\" -i {ssh_key_path} {user_name}@{public_ip} 'tail -f /var/log/cloud-init-output.log'
+
 # download a remote file to local machine
 scp -i {ssh_key_path} {user_name}@{public_ip}:REMOTE_FILE_PATH LOCAL_FILE_PATH
 scp -i {ssh_key_path} -r {user_name}@{public_ip}:REMOTE_DIRECTORY_PATH LOCAL_DIRECTORY_PATH
+
 # upload a local file to remote machine
 scp -i {ssh_key_path} LOCAL_FILE_PATH {user_name}@{public_ip}:REMOTE_FILE_PATH
 scp -i {ssh_key_path} -r LOCAL_DIRECTORY_PATH {user_name}@{public_ip}:REMOTE_DIRECTORY_PATH
-# AWS: SSM session (requires a running SSM agent)
-# aws ssm start-session --region {region} --target {instance_id}",
+
+# AWS SSM session (requires a running SSM agent)
+# https://github.com/aws/amazon-ssm-agent/issues/131
+aws ssm start-session {profile_flag}--region {region} --target {instance_id}
+aws ssm start-session {profile_flag}--region {region} --target {instance_id} --document-name 'AWS-StartNonInteractiveCommand' --parameters command='sudo sh -c \"tail -10 /var/log/cloud-init-output.log\"'
+aws ssm start-session {profile_flag}--region {region} --target {instance_id} --document-name 'AWS-StartNonInteractiveCommand' --parameters command='sudo sh -c \"tail -f /var/log/cloud-init-output.log\"'
+aws ssm start-session {profile_flag}--region {region} --target {instance_id} --document-name 'AWS-StartInteractiveCommand' --parameters command=\"bash -l\"'
+",
             ssh_key_path = self.ssh_key_path,
             user_name = self.user_name,
 
@@ -55,6 +66,12 @@ scp -i {ssh_key_path} -r LOCAL_DIRECTORY_PATH {user_name}@{public_ip}:REMOTE_DIR
 
             ip_mode = self.ip_mode,
             public_ip = self.public_ip,
+
+            profile_flag = if let Some(v) = &self.profile { 
+                format!("--profile {v} ")
+            } else {
+                String::new()
+            },
         )
     }
 }
