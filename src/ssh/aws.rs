@@ -51,9 +51,8 @@ scp -i {ssh_key_path} -r LOCAL_DIRECTORY_PATH {user_name}@{public_ip}:REMOTE_DIR
 # AWS SSM session (requires a running SSM agent)
 # https://github.com/aws/amazon-ssm-agent/issues/131
 aws ssm start-session {profile_flag}--region {region} --target {instance_id}
-aws ssm start-session {profile_flag}--region {region} --target {instance_id} --document-name 'AWS-StartNonInteractiveCommand' --parameters command='sudo sh -c \"tail -10 /var/log/cloud-init-output.log\"'
-aws ssm start-session {profile_flag}--region {region} --target {instance_id} --document-name 'AWS-StartNonInteractiveCommand' --parameters command='sudo sh -c \"tail -f /var/log/cloud-init-output.log\"'
-aws ssm start-session {profile_flag}--region {region} --target {instance_id} --document-name 'AWS-StartInteractiveCommand' --parameters command=\"bash -l\"'
+aws ssm start-session {profile_flag}--region {region} --target {instance_id} --document-name 'AWS-StartNonInteractiveCommand' --parameters command=\"sudo tail -10 /var/log/cloud-init-output.log\"
+aws ssm start-session {profile_flag}--region {region} --target {instance_id} --document-name 'AWS-StartInteractiveCommand' --parameters command=\"bash -l\"
 ",
             ssh_key_path = self.ssh_key_path,
             user_name = self.user_name,
@@ -67,7 +66,7 @@ aws ssm start-session {profile_flag}--region {region} --target {instance_id} --d
             ip_mode = self.ip_mode,
             public_ip = self.public_ip,
 
-            profile_flag = if let Some(v) = &self.profile { 
+            profile_flag = if let Some(v) = &self.profile {
                 format!("--profile {v} ")
             } else {
                 String::new()
