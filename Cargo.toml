@@ -1,8 +1,8 @@
 [package]
 name = "ssh-scp-manager"
-version = "0.0.4" # https://crates.io/crates/ssh-scp-manager
+version = "0.0.5" # https://crates.io/crates/ssh-scp-manager
 edition = "2021"
-rust-version = "1.70"
+rust-version = "1.73"
 publish = true
 description = "Rust random manager"
 repository = "https://github.com/gyuho/ssh-scp-manager"
@@ -12,9 +12,12 @@ license = "Apache-2.0"
 [dependencies]
 base64 = "0.21.2"
 command-manager = "0.0.3"
-log = "0.4.17"
+log = "0.4.20"
+
+# https://github.com/sfackler/rust-openssl/issues/183
 openssl = { version = "0.10", features = ["vendored"] }
-serde = { version = "1.0.167", features = ["derive"] } # https://github.com/serde-rs/serde/releases
+
+serde = { version = "1.0.192", features = ["derive"] } # https://github.com/serde-rs/serde/releases
 
 [dev-dependencies]
 env_logger = "0.10.0"
